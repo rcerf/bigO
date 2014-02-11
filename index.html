@@ -57,7 +57,8 @@
           render: function(){
             var template = this.template;
             var el = this.$el;
-
+            // TODO: refactor the span being empited so the buttons don't need
+            // to be re-appended after the empty()
             $(".span4 ul").empty();
             this.collection.each(function(question){
               el.append(template(question.toJSON()));
@@ -68,6 +69,36 @@
 
             return this;
           }
+
+        });
+
+        var AddView = Backbone.View.extend({
+
+          className: "span8",
+          tagName: "div",
+
+          events: {
+            'click #addBtn': 'add',
+            'keypress .addName': 'onEnter'
+          },
+
+          add: function(){
+            e.preventDefault();
+
+            var newQuestion = new Question({
+              question:$('#name').val(),
+              answer:$('#answer').val(),
+            });
+
+            questions.add()
+          },
+
+          onEnter: function(e){
+            if(e.keyCode === 13) {
+              this.add(e);
+            }
+          },
+
 
         });
 
@@ -122,6 +153,52 @@
 
     <script type="text/template" id="item-list">
       <li>a href="#"><%=name%></a></li>
+    </script>
+
+    <script type="text/template" id="item-edit">
+      <form class="form-horizontal" method="post">
+        <fieldset>
+          <legend>Create new BigO Question</legend>
+          <div class="control-group">
+            <label class="control-label" for="input01">Question:</label>
+            <div class="controls">
+              <input type="text" class="input-xlarge addName" id="question" name="question">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="input02">Answer:</label>
+              <div class="controls">
+                <select name="answer">
+                  <option name="answer1">O(n!)</option>
+                  <option name="answer2">O(2^n)</option>
+                  <option name="answer3">O(n^2)</option>
+                  <option name="answer4">O(n log(n))</option>
+                  <option name="answer5">O(n)</option>
+                  <option name="answer6">O(n log(n))</option>
+                  <option name="answer7">O(1)</option>
+                </select>
+              </div>
+          </div>
+          <div class="control-group">
+            <div class="controls">
+              <a href="#" id="cancelBtn" class="btn">cancel</a>
+              <a href="#" id="addBtn" class="btn">add</a>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </script>
+
+    <script type="text/template" id="item-answers">
+      <div class="btn-group" id=>
+        <button type="button" class="btn btn-default">O(n!)</button>
+        <button type="button" class="btn btn-default">O(2^n)</button>
+        <button type="button" class="btn btn-default">O(n^2)</button>
+        <button type="button" class="btn btn-default">O(n log(n))</button>
+        <button type="button" class="btn btn-default">O(n)</button>
+        <button type="button" class="btn btn-default">O(log(n))</button>
+        <button type="button" class="btn btn-default">O(1)</button>
+      </div>
     </script>
 
   </head>
