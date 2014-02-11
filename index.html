@@ -29,14 +29,45 @@
           },
 
           render: function(){
+            var template = this.template;
             var el = this.$el;
-            el.empty();
-            el.append(this.template);
 
-            //TODO: instantiate a subView.
+            el.empty();
+            el.append(template);
+
+            var listView = new ListView({collection:questions});
             
-            // TODO: append that subView to the DOM
+            $('span4').append(listView.render().el);
+
+            return this;
           }
+        });
+
+        var ListView = Backbone.View.extend({
+          tagName: 'ul',
+          className: 'nav nav-list',
+
+          initialize: function(){
+            this.collection.bind('all', _.bind(this.render, this));
+            this.template = _.template($('#item-list').html());
+          },
+
+          render: function(){
+            var template = this.template;
+            var el = this.$el;
+            console.log(el);
+
+            $(".span4 ul").empty();
+            this.collection.each(function(question){
+              el.append(template(question.toJSON()));
+            });
+            
+            el.append('<li><a href="#add">add new question</a></li>');
+            el.append('<li><a href="#next">next question</a></li>');
+
+            return this;
+          }
+
         });
 
         window.AppRouter = Backbone.Router.extend({
@@ -86,6 +117,10 @@
           </div>
         </div>
       </div>
+    </script>
+
+    <script type="text/template" id="item-list">
+      <li>a href="#"><%=name%></a></li>
     </script>
 
   </head>
