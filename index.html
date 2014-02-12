@@ -65,6 +65,7 @@
             });
             
             el.append('<li><a href="#add">add new question</a></li>');
+            // Do we need the next button here?
             el.append('<li><a href="#next">next question</a></li>');
 
             return this;
@@ -79,18 +80,38 @@
 
           events: {
             'click #addBtn': 'add',
-            'keypress .addName': 'onEnter'
+            'keypress .addQuestion': 'onEnter'
           },
 
-          add: function(){
+          initialize: function(){
+            this.template = _.template($('#item-edit').html());
+            this.render();
+          },
+
+          render: function(){
+            template = this.template;
+
+            $(this.el).html(template());
+            $('.row').append(this.el);
+
+            return this;
+          },
+
+          add: function(e) {
             e.preventDefault();
 
             var newQuestion = new Question({
-              question:$('#name').val(),
+              question:$('#question').val(),
               answer:$('#answer').val(),
             });
 
-            questions.add()
+            questions.add(newQuestion);
+
+            // Clear the field
+            $("#question").val('');
+            $('#answer').val(0);
+
+            return this;
           },
 
           onEnter: function(e){
@@ -152,7 +173,7 @@
     </script>
 
     <script type="text/template" id="item-list">
-      <li>a href="#"><%=name%></a></li>
+      <li><a href="#"><%=question%></a></li>
     </script>
 
     <script type="text/template" id="item-edit">
@@ -162,20 +183,20 @@
           <div class="control-group">
             <label class="control-label" for="input01">Question:</label>
             <div class="controls">
-              <input type="text" class="input-xlarge addName" id="question" name="question">
+              <input type="text" class="input-xlarge addQuestion" id="question" name="question">
             </div>
           </div>
           <div class="control-group">
             <label class="control-label" for="input02">Answer:</label>
               <div class="controls">
-                <select name="answer">
-                  <option name="answer1">O(n!)</option>
-                  <option name="answer2">O(2^n)</option>
-                  <option name="answer3">O(n^2)</option>
-                  <option name="answer4">O(n log(n))</option>
-                  <option name="answer5">O(n)</option>
-                  <option name="answer6">O(n log(n))</option>
-                  <option name="answer7">O(1)</option>
+                <select name="answer" id="answer">
+                  <option name="answer0" value="00">O(n!)</option>
+                  <option name="answer1" value="01">O(2^n)</option>
+                  <option name="answer2" value="02">O(n^2)</option>
+                  <option name="answer3" value="03">O(n log(n))</option>
+                  <option name="answer4" value="04">O(n)</option>
+                  <option name="answer5" value="05">O(n log(n))</option>
+                  <option name="answer6" value="06">O(1)</option>
                 </select>
               </div>
           </div>
@@ -190,15 +211,17 @@
     </script>
 
     <script type="text/template" id="item-answers">
-      <div class="btn-group" id=>
-        <button type="button" class="btn btn-default">O(n!)</button>
-        <button type="button" class="btn btn-default">O(2^n)</button>
-        <button type="button" class="btn btn-default">O(n^2)</button>
-        <button type="button" class="btn btn-default">O(n log(n))</button>
-        <button type="button" class="btn btn-default">O(n)</button>
-        <button type="button" class="btn btn-default">O(log(n))</button>
-        <button type="button" class="btn btn-default">O(1)</button>
-      </div>
+      <form class="form-horizontal" method="post">
+        <div class="btn-group" id=>
+          <button type="button" class="btn btn-default">O(n!)</button>
+          <button type="button" class="btn btn-default">O(2^n)</button>
+          <button type="button" class="btn btn-default">O(n^2)</button>
+          <button type="button" class="btn btn-default">O(n log(n))</button>
+          <button type="button" class="btn btn-default">O(n)</button>
+          <button type="button" class="btn btn-default">O(log(n))</button>
+          <button type="button" class="btn btn-default">O(1)</button>
+        </div>
+      </form>
     </script>
 
   </head>
